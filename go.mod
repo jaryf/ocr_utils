@@ -1,3 +1,3 @@
-module ocr_utils
+module github.com/jaryf/ocr_utils
 
-go 1.20
+go 1.16

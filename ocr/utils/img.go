@@ -21,7 +21,12 @@ func GetImgBase64FromUrl(imgUrl string) (imgBase64 string, err error) {
 		err = errors.New("获取图片响应码非200")
 		return
 	}
-	defer resp.Body.Close()
+	defer func() {
+		err = resp.Body.Close()
+		if err != nil {
+			return
+		}
+	}()
 	respByte, err = io.ReadAll(resp.Body)
 	if err != nil {
 		return
@@ -38,7 +43,12 @@ func GetImgBase64FromPath(imgPath string) (imgBase64 string, err error) {
 	if f, err = os.Open(imgPath); err != nil {
 		return
 	}
-	defer f.Close()
+	defer func() {
+		err = f.Close()
+		if err != nil {
+			return
+		}
+	}()
 	if fByte, err = io.ReadAll(f); err != nil {
 		return
 	}

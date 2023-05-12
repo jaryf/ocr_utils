@@ -8,10 +8,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/jaryf/ocr_utils/ocr/utils"
 	"io"
 	"net/http"
 	"net/url"
-	"ocr_utils/ocr/utils"
 	"strings"
 	"time"
 )

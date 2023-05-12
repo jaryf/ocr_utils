@@ -29,7 +29,7 @@ func init() {
 func TestBdOcr_ImgOcr(t *testing.T) {
 	res, err := bd.ImgOcr(&GeneralBasicReq{
 		Url:             imgUrl2,
-		LanguageType:    "CHN_ENG",
+		LanguageType:    CHN_ENG,
 		DetectDirection: true,
 		DetectLanguage:  true,
 		Paragraph:       true,
