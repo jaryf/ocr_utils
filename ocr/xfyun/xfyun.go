@@ -11,7 +11,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"os"
+	"ocr_utils/ocr/utils"
 	"strings"
 	"time"
 )
@@ -36,13 +36,6 @@ func NewXfOcr(appId string, apiSecret string, apiKey string, webAPI string, host
 			Timeout: time.Second * 10,
 		},
 	}
-}
-
-func (m *XfOcr) xfAuthorization() {
-	// now := time.Now()
-	// date := now.Format(time.RFC1123)
-	// api_key="$api_key",algorithm="hmac-sha256",headers="host date request-line",signature="$signature"
-
 }
 
 func (m *XfOcr) DefaultReqBody() *XfOcrReqBody {
@@ -178,46 +171,8 @@ func (m *XfOcr) ImgOcr(reqBody *XfOcrReqBody) (wordList []string, err error) {
 	return
 }
 
-func (m *XfOcr) getImgBase64FromUrl(imgUrl string) (imgBase64 string, err error) {
-	var (
-		resp     *http.Response
-		respByte []byte
-	)
-	resp, err = m.h.Get(imgUrl)
-	if err != nil {
-		return
-	}
-	if resp.StatusCode != 200 {
-		err = errors.New("获取图片响应码非200")
-		return
-	}
-	defer resp.Body.Close()
-	respByte, err = io.ReadAll(resp.Body)
-	if err != nil {
-		return
-	}
-	imgBase64 = base64.StdEncoding.EncodeToString(respByte)
-	return
-}
-
-func (m *XfOcr) getImgBase64FromPath(imgPath string) (imgBase64 string, err error) {
-	var (
-		f     *os.File
-		fByte []byte
-	)
-	if f, err = os.Open(imgPath); err != nil {
-		return
-	}
-	defer f.Close()
-	if fByte, err = io.ReadAll(f); err != nil {
-		return
-	}
-	imgBase64 = base64.StdEncoding.EncodeToString(fByte)
-	return
-}
-
 func (m *XfOcr) ImgOcrXfFromPath(imgPath string) (wordList []string, err error) {
-	imgBase64, err := m.getImgBase64FromPath(imgPath)
+	imgBase64, err := utils.GetImgBase64FromPath(imgPath)
 	if err != nil {
 		return
 	}
@@ -227,7 +182,7 @@ func (m *XfOcr) ImgOcrXfFromPath(imgPath string) (wordList []string, err error) 
 }
 
 func (m *XfOcr) ImgOcrXfFromUrl(imgUrl string) (wordList []string, err error) {
-	imgBase64, err := m.getImgBase64FromUrl(imgUrl)
+	imgBase64, err := utils.GetImgBase64FromUrl(imgUrl)
 	if err != nil {
 		return
 	}
