@@ -39,6 +39,18 @@ type GeneralBasicReq struct {
 	Probability     bool         `json:"probability,omitempty"`      // 是否返回识别结果中每一行的置信度
 }
 
+type FreeImgOcrResult struct {
+	Errno int    `json:"errno"`
+	Msg   string `json:"msg"`
+	Data  struct {
+		WordsResult []struct {
+			Words string `json:"words"`
+		} `json:"words_result"`
+		WordsResultNum int    `json:"words_result_num"`
+		LogId          string `json:"log_id"`
+	} `json:"data"`
+}
+
 type GeneralBasicResult struct {
 	ParagraphsResult []struct {
 		WordsResultIdx []int `json:"words_result_idx"`

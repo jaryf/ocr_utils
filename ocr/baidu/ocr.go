@@ -101,6 +101,42 @@ func (m *BdOcr) ImgOcr(req *GeneralBasicReq) (res GeneralBasicResult, err error)
 	return
 }
 
+func (m *BdOcr) FreeImgOcr(imgUrl string) (res FreeImgOcrResult, err error) {
+	reqValues := url.Values{}
+	reqValues.Add("image_url", imgUrl)
+	reqValues.Add("type", "https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic")
+	reqValues.Add("detect_direction", "false")
+	reqValues.Add("language_type", "CHN_ENG")
+	reqStr := reqValues.Encode()
+	apiReq, err := http.NewRequest(http.MethodPost, FreeOcrUrl, strings.NewReader(reqStr))
+	if err != nil {
+		return
+	}
+	apiReq.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	apiReq.Header.Set("Referer", "https://ai.baidu.com/tech/ocr/general?p=%E5%8A%9F%E8%83%BD%E6%BC%94%E7%A4%BA&from=experience")
+	apiReq.Header.Set("cookie", "BAIDUID_BFESS=0125581E8E346520EB555961EE467CA9:FG=1;BAIDUID=0125581E8E346520EB555961EE467CA9:FG=1")
+	resp, err := m.h.Do(apiReq)
+	if err != nil {
+		return
+	}
+	defer func() {
+		respErr := resp.Body.Close()
+		if respErr != nil {
+			return
+		}
+	}()
+	respBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
+	if resp.StatusCode != http.StatusOK {
+		err = fmt.Errorf("statusCode != 200, response is %v", string(respBytes))
+		return
+	}
+	err = json.Unmarshal(respBytes, &res)
+	return
+}
+
 func (m *BdOcr) GetAccessToken() (token string, err error) {
 	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf(AccessTokenUrl, m.apiKey, m.apiSecret), nil)
 	if err != nil {
